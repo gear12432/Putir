@@ -1,11 +1,20 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
+  // Determine base path: if building in GitHub Actions, use /<repo-name>/, otherwise './'
+  const getBasePath = () => {
+    if (process.env.GITHUB_REPOSITORY) {
+      const repoName = process.env.GITHUB_REPOSITORY.split('/')[1];
+      if (repoName) return `/${repoName}/`;
+    }
+    return './';
+  };
+
   return {
-    base: './',
+    base: getBasePath(),
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
